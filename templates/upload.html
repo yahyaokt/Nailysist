@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Nailysist - Unggah Gambar Kuku</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .flash-messages {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 0;
+        }
+        .flash-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 12px 20px;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <a href="/" style="text-decoration: none; color: inherit;">
+                <h1>Nailysist</h1>
+                <p>Nail Disease Detector</p>
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="#">Tentang</a>
+            <a href="#">Bantuan</a>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <h2>Unggah Gambar Kuku Anda</h2>
+        
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for message in messages %}
+                        <div class="flash-message">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        
+        <form method="post" action="/predict" enctype="multipart/form-data">
+            <div class="upload-box" id="uploadArea">
+                <p>Seret & Lepas gambar Anda di sini</p>
+                <p class="or">Atau</p>
+                <div class="button-container">
+                    <button type="button" class="select-file-btn" onclick="triggerFileInput()">Pilih File</button>
+                    <button type="button" class="select-file-btn" onclick="startCamera()">Gunakan Kamera</button>
+                </div>
+                <input type="file" name="image" id="fileInput" accept="image/*" hidden required>
+                <select id="cameraSelect" style="display: none;" class="camera-select">
+                    <option value="">Pilih Kamera</option>
+                </select>
+                <div class="camera-container">
+                    <video id="cameraPreview" style="display: none;" class="camera-preview"></video>
+                </div>
+                <div class="capture-container">
+                    <button type="button" id="captureBtn" style="display: none;" class="select-file-btn" onclick="captureImage()">Ambil Foto</button>
+                </div>
+                <canvas id="imageCanvas" style="display: none;"></canvas>
+                <img id="imagePreview" src="" alt="Image Preview" style="display: none; margin-top: 30px; max-width: 300px; border-radius: 15px;">
+            </div>
+            <button type="submit" class="predict-btn">Deteksi Penyakit</button>
+        </form>
+    </main>
+
+    <script>
+        function resizeImage(file, maxWidth, maxHeight, callback) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > maxWidth) {
+                            height *= maxWidth / width;
+                            width = maxWidth;
+                        }
+                    } else {
+                        if (height > maxHeight) {
+                            width *= maxHeight / height;
+                            height = maxHeight;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    canvas.toBlob(callback, 'image/jpeg', 0.85);
+                }
+                img.src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+
+        let stream = null;
+
+        async function getCameraDevices() {
+            try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const videoDevices = devices.filter(device => device.kind === 'videoinput');
+                const cameraSelect = document.getElementById('cameraSelect');
+                cameraSelect.innerHTML = '<option value="">Pilih Kamera</option>';
+                
+                videoDevices.forEach(device => {
+                    const option = document.createElement('option');
+                    option.value = device.deviceId;
+                    option.text = device.label || `Kamera ${cameraSelect.length}`;
+                    cameraSelect.appendChild(option);
+                });
+                
+                if (videoDevices.length > 1) {
+                    cameraSelect.style.display = 'block';
+                }
+            } catch (err) {
+                console.error('Error getting camera devices:', err);
+            }
+        }
+
+        async function startCamera() {
+            try {
+                await getCameraDevices();
+                const cameraSelect = document.getElementById('cameraSelect');
+                const video = document.getElementById('cameraPreview');
+                const captureBtn = document.getElementById('captureBtn');
+
+                async function initializeCamera(deviceId = '') {
+                    const constraints = {
+                        video: deviceId ? { deviceId: { exact: deviceId } } : true
+                    };
+
+                    if (stream) {
+                        stream.getTracks().forEach(track => track.stop());
+                    }
+
+                    stream = await navigator.mediaDevices.getUserMedia(constraints);
+                    video.srcObject = stream;
+                    video.style.display = 'block';
+                    captureBtn.style.display = 'block';
+                    video.play();
+                }
+
+                cameraSelect.addEventListener('change', (e) => {
+                    if (e.target.value) {
+                        initializeCamera(e.target.value);
+                    }
+                });
+
+                await initializeCamera();
+
+            } catch (err) {
+                alert('Tidak dapat mengakses kamera: ' + err.message);
+            }
+        }
+
+        function captureImage() {
+            const video = document.getElementById('cameraPreview');
+            const canvas = document.getElementById('imageCanvas');
+            const context = canvas.getContext('2d');
+            const imagePreview = document.getElementById('imagePreview');
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            canvas.toBlob((blob) => {
+                const file = new File([blob], 'camera-capture.jpg', { type: 'image/jpeg' });
+                const fileInput = document.getElementById('fileInput');
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                fileInput.files = dataTransfer.files;
+
+                imagePreview.src = URL.createObjectURL(blob);
+                imagePreview.style.display = 'block';
+                video.style.display = 'none';
+                document.getElementById('captureBtn').style.display = 'none';
+
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                    stream = null;
+                }
+            }, 'image/jpeg', 0.85);
+        }
+
+        function handleFileSelect(file) {
+            if (file) {
+                resizeImage(file, 800, 800, (blob) => {
+                    const imagePreview = document.getElementById('imagePreview');
+                    imagePreview.src = URL.createObjectURL(blob);
+                    imagePreview.style.display = 'block';
+
+                    const fileInput = document.getElementById('fileInput');
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(new File([blob], file.name, { type: 'image/jpeg' }));
+                    fileInput.files = dataTransfer.files;
+                });
+            }
+        }
+
+        // Event listener untuk drag & drop
+        const uploadArea = document.getElementById('uploadArea');
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                handleFileSelect(file);
+            }
+        });
+
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                handleFileSelect(file);
+            }
+        });
+
+        function triggerFileInput() {
+            document.getElementById('fileInput').click();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Nailysist - Deteksi Penyakit Kuku</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <a href="/" style="text-decoration: none; color: inherit;">
+                <h1>Nailysist</h1>
+                <p>Nail Disease Detector</p>
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="#">Tentang</a> <a href="#">Bantuan</a> </div>
+    </nav>
+
+    <div class="landing-container">
+        <div class="landing-content">
+            <h1>Deteksi Penyakit Kuku Anda dengan AI</h1>
+            <p>Aplikasi berbasis kecerdasan buatan terdepan untuk mendeteksi berbagai penyakit kuku dengan akurasi tinggi dan cepat.</p>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>Deteksi Cepat</h3>
+                    <p>Dapatkan hasil analisis dalam hitungan detik setelah mengunggah foto kuku Anda.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Akurasi Tinggi</h3>
+                    <p>Didukung oleh model AI terlatih dengan data ekstensif untuk hasil yang presisi.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Mudah Digunakan</h3>
+                    <p>Antarmuka intuitif. Cukup upload foto kuku Anda dan biarkan AI bekerja.</p>
+                </div>
+            </div>
+            <a href="/upload" class="start-btn">Mulai Deteksi Sekarang</a>
+        </div>
+    </div>
+</body>
+</html>

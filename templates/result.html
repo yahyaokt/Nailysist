@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Nailysist - Hasil Prediksi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">
+            <a href="/" style="text-decoration: none; color: inherit;">
+                <h1>Nailysist</h1>
+                <p>Nail Disease Detector</p>
+            </a>
+        </div>
+        <div class="nav-links">
+            <a href="#">Tentang</a>
+            <a href="#">Bantuan</a>
+        </div>
+    </nav>
+
+    <div class="result-container">
+        <div class="result-card primary">
+            <div class="result-image">
+                <img src="{{ image_path }}" alt="Nail Image">
+            </div>
+            <div class="result-info">
+                <h3>Kondisi: {{ prediction }}</h3>
+                <p>Keyakinan: {{ confidence }}%</p>
+            </div>
+        </div>
+
+        <div class="result-card secondary">
+            <h3>Peluang Kondisi Lainnya:</h3>
+            <div class="probability-circles">
+                <div class="prob-circle {% if prediction == 'Bluish Nail' %}active{% endif %}">
+                    <span class="percentage">{{ probabilities['Bluish Nail'] }}%</span>
+                    <span class="label">Bluish Nail</span>
+                </div>
+                <div class="prob-circle {% if prediction == 'Healthy Nail' %}active{% endif %}">
+                    <span class="percentage">{{ probabilities['Healthy Nail'] }}%</span>
+                    <span class="label">Healthy Nail</span>
+                </div>
+                <div class="prob-circle {% if prediction == 'Koilonychia' %}active{% endif %}">
+                    <span class="percentage">{{ probabilities['Koilonychia'] }}%</span>
+                    <span class="label">Koilonychia</span>
+                </div>
+                 <div class="prob-circle {% if prediction == 'Terry-s nail' %}active{% endif %}">
+                    <span class="percentage">{{ probabilities['Terry-s nail'] }}%</span>
+                    <span class="label">Terry-s nail</span>
+                </div>
+            </div>
+            <div class="condition-info">
+                <h4>Apa itu {{ prediction }}?</h4>
+                <p>{{ description }}</p>
+                <p style="font-size: 0.9em; color: #888; margin-top: 15px;">*Disclaimer: Hasil ini adalah prediksi berbasis AI dan bukan diagnosis medis. Selalu konsultasikan dengan profesional kesehatan untuk diagnosis dan perawatan yang akurat.</p>
+            </div>
+        </div>
+
+        <a href="/upload" class="upload-another-btn">Unggah Gambar Lain</a>
+    </div>
+    <script src="{{ url_for('static', filename='js/result.js') }}"></script>
+</body>
+</html>
