@@ -23,39 +23,76 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 prediction_results = {}
 
+# Model untuk prediksi kelas kuku
 model = None
-try:
-    print("Attempting to load gg_model.pkl...")
+# Model untuk deteksi apakah gambar adalah kuku atau bukan
+nail_detector_model = None
 
+# Load model utama (prediksi kelas kuku)
+try:
     try:
         with open("gacor_model.pkl", "rb") as f:
             model = pickle.load(f)
-        print("Model loaded successfully with standard pickle!")
+        print("Main model loaded successfully with standard pickle!")
     except Exception as e1:
-        print(f"Standard pickle failed: {e1}")
+        print(f"Standard pickle failed for main model: {e1}")
 
         try:
             with open("gacor_model.pkl", "rb") as f:
                 model = pickle.load(f, encoding='latin1')
-            print("Model loaded successfully with latin1 encoding!")
+            print("Main model loaded successfully with latin1 encoding!")
         except Exception as e2:
-            print(f"Latin1 encoding failed: {e2}")
+            print(f"Latin1 encoding failed for main model: {e2}")
 
             try:
                 import joblib
                 model = joblib.load("gacor_model.pkl")
+                print("Main model loaded successfully with joblib!")
             except Exception as e3:
-                print(f"Joblib loading failed: {e3}")
+                print(f"Joblib loading failed for main model: {e3}")
     
     if model is not None:
-        print(f"Model type: {type(model)}")
-        print("Model loaded successfully!")
+        print(f"Main model type: {type(model)}")
+        print("Main model loaded successfully!")
     else:
-        print("FAILED TO LOAD ANY MODEL!")
+        print("FAILED TO LOAD MAIN MODEL!")
         
 except Exception as e:
-    print(f"Critical error in model loading: {e}")
+    print(f"Critical error in main model loading: {e}")
     model = None
+
+# Load model detector kuku
+try:
+    try:
+        with open("model_kuku.pkl", "rb") as f:
+            nail_detector_model = pickle.load(f)
+        print("Nail detector model loaded successfully with standard pickle!")
+    except Exception as e1:
+        print(f"Standard pickle failed for nail detector: {e1}")
+
+        try:
+            with open("model_kuku.pkl", "rb") as f:
+                nail_detector_model = pickle.load(f, encoding='latin1')
+            print("Nail detector model loaded successfully with latin1 encoding!")
+        except Exception as e2:
+            print(f"Latin1 encoding failed for nail detector: {e2}")
+
+            try:
+                import joblib
+                nail_detector_model = joblib.load("model_kuku.pkl")
+                print("Nail detector model loaded successfully with joblib!")
+            except Exception as e3:
+                print(f"Joblib loading failed for nail detector: {e3}")
+    
+    if nail_detector_model is not None:
+        print(f"Nail detector model type: {type(nail_detector_model)}")
+        print("Nail detector model loaded successfully!")
+    else:
+        print("FAILED TO LOAD NAIL DETECTOR MODEL!")
+        
+except Exception as e:
+    print(f"Critical error in nail detector model loading: {e}")
+    nail_detector_model = None
 
 CLASS_LABELS = {
     0: 'Bluish Nail',
@@ -65,10 +102,10 @@ CLASS_LABELS = {
 }
 
 CONDITION_DESCRIPTIONS = {
-    'Bluish Nail': 'Kondisi autoimun yang menyebabkan penebalan, perubahan warna, dan kelainan bentuk pada kuku. Dapat disertai dengan bintik-bintik kecil atau garis-garis pada permukaan kuku.',
-    'Healthy Nail': 'Kuku dalam kondisi sehat tanpa tanda-tanda penyakit atau kelainan yang terdeteksi.',
-    'Koilonychia': 'Infeksi jamur (onikomikosis) yang menyebabkan perubahan warna kuku menjadi kuning, putih, atau coklat, penebalan, dan rapuh. Sering dimulai dari ujung kuku.',
-    'Terry-s nail': 'Kerusakan kuku akibat cedera fisik seperti terjepit, terpukul, atau tekanan berulang. Dapat menyebabkan perdarahan di bawah kuku atau kerusakan struktur kuku.'
+    'Bluish Nail': 'Kondisi yang bisa terjadi karena gangguan peredaran darah atau masalah jantung, yang menyebabkan perubahan warna kuku menjadi kebiruan. Kondisi ini menunjukkan adanya kadar oksigen yang rendah dalam darah atau masalah dengan aliran darah yang dapat mengindikasikan penyakit serius seperti gangguan paru-paru atau jantung.',
+    'Healthy Nail': 'Kuku yang sehat memiliki warna pink alami, tekstur yang halus, dan tidak ada perubahan warna, kerusakan, atau kelainan lainnya. Ini adalah tanda tubuh dalam keadaan sehat secara umum.',
+    'Koilonychia': 'Kondisi ini sering disebut sebagai kuku sendok, dimana kuku menjadi tipis, melengkung ke dalam, dan terkadang tampak seperti sendok. Hal ini bisa menjadi tanda kekurangan zat besi atau gangguan kesehatan lain seperti anemia atau penyakit jantung.',
+    'Terry-s nail': 'Kondisi ini menunjukkan adanya perubahan warna pada kuku yang menjadi putih dengan area gelap di ujungnya. Terry-s nail dapat berhubungan dengan gangguan kesehatan serius, termasuk penyakit hati, gagal ginjal, atau diabetes.'
 }
 
 def allowed_file(filename):
@@ -100,6 +137,34 @@ def preprocess_and_extract_features(image_path):
     except Exception as e:
         print(f"Error in preprocessing: {e}")
         return None
+
+def is_nail_image(nail_detector_model, features):
+    """
+    Fungsi untuk mendeteksi apakah gambar adalah kuku atau bukan
+    Returns: True jika gambar adalah kuku (prediksi = 1), False jika bukan (prediksi = 0)
+    """
+    try:
+        if nail_detector_model is None:
+            print("Nail detector model not available, assuming image is nail")
+            return True
+        
+        # Prediksi menggunakan model detector kuku
+        if hasattr(nail_detector_model, 'predict'):
+            prediction = nail_detector_model.predict(features)[0]
+        else:
+            print("Nail detector model doesn't have predict method")
+            return True
+        
+        print(f"Nail detector prediction: {prediction}")
+        
+        # Jika prediksi = 1, maka gambar adalah kuku
+        # Jika prediksi = 0, maka gambar bukan kuku
+        return prediction == 1
+        
+    except Exception as e:
+        print(f"Error in nail detection: {e}")
+        # Jika terjadi error, anggap gambar adalah kuku untuk menghindari false negative
+        return True
 
 def get_prediction_probabilities(model, features):
     try:
@@ -148,6 +213,10 @@ def landing():
 @app.route('/upload')
 def upload():
     return render_template('upload.html')
+
+@app.route('/penyakit')
+def penyakit():
+    return render_template('penyakit.html')
 
 @app.route('/loading/<prediction_id>')
 def loading(prediction_id):
@@ -217,7 +286,34 @@ def check_prediction(prediction_id):
                 return jsonify(result)
             
             print(f"Features shape: {features.shape}")
-            print("Making prediction...")
+            
+            # Cek apakah gambar adalah kuku menggunakan model detector
+            print("Checking if image is a nail...")
+            if not is_nail_image(nail_detector_model, features):
+                # Jika bukan gambar kuku (prediksi = 0)
+                print("Image is not detected as a nail image")
+                
+                image_path = url_for('static', filename=f'uploads/{filename}')
+                
+                result.update({
+                    'status': 'completed',
+                    'prediction': 'Bukan Gambar Kuku',
+                    'confidence': 95.0,
+                    'description': 'Gambar yang Anda upload tidak terdeteksi sebagai gambar kuku. Silakan upload gambar kuku yang jelas untuk mendapatkan hasil diagnosa yang akurat.',
+                    'image_path': image_path,
+                    'probabilities': {
+                        'Bluish Nail': 0.0,
+                        'Healthy Nail': 0.0,
+                        'Koilonychia': 0.0,
+                        'Terry-s nail': 0.0
+                    }
+                })
+                
+                return jsonify(result)
+            
+            # Jika gambar adalah kuku (prediksi = 1), lanjutkan prediksi kelas kuku
+            print("Image is detected as a nail image, proceeding with nail classification...")
+            print("Making nail condition prediction...")
             
             predicted_class, probabilities = get_prediction_probabilities(model, features)
             
@@ -244,7 +340,7 @@ def check_prediction(prediction_id):
                 'probabilities': probability_dict
             })
             
-            print(f"Prediction completed: {prediction_label} with {main_confidence}% confidence")
+            print(f"Nail condition prediction completed: {prediction_label} with {main_confidence}% confidence")
             
         except Exception as e:
             print(f"Error in prediction: {e}")
@@ -283,13 +379,11 @@ if __name__ == '__main__':
     
     print(f"Starting Flask app on port {port}")
     print(f"Debug mode: {debug_mode}")
+    print(f"Main model available: {model is not None}")
+    print(f"Nail detector model available: {nail_detector_model is not None}")
     
     app.run(
         host='0.0.0.0',
         port=port,
         debug=debug_mode
-<<<<<<< HEAD
     )
-=======
-    )
->>>>>>> f3644be501db0569aed03f1215fb70913a3e67a8

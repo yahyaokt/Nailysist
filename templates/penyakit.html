@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nailysist - Panduan Penyakit Kuku</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-green: #10b981;
+            --primary-green: #059669;
+            --light-green: #d1fae5;
+            --accent-green: #34d399;
+            --text-dark: #1f2937;
+            --text-gray: #6b7280;
+            --bg-light: #f9fafb;
+            --white: #ffffff;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 20px 40px -10px rgba(16, 185, 129, 0.3);
+            
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: var(--white);
+            overflow-x: hidden;
+        }
+
+        /* Background Animation */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.05;
+        }
+
+        .floating-shape {
+            position: absolute;
+            background: linear-gradient(45deg, var(--primary-green), var(--accent-green));
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .shape-1 {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .shape-2 {
+            width: 120px;
+            height: 120px;
+            top: 60%;
+            right: 15%;
+            animation-delay: 2s;
+        }
+
+        .shape-3 {
+            width: 60px;
+            height: 60px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            background: var(--white);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(16, 185, 129, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            box-shadow: var(--shadow);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .logo {
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-green));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.2rem;
+        }
+
+        .logo p {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-gray);
+            letter-spacing: 0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .nav-links a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background: linear-gradient(90deg, var(--primary-green), var(--accent-green));
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-green);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 3rem 5% 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: var(--light-green);
+            color: var(--primary-green);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--primary-green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--text-dark) 0%, var(--primary-green) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-gray);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 5%;
+        }
+
+        /* Diseases Grid - 2 cards on top, 1 centered below */
+        .diseases-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2.5rem;
+            margin-top: 2rem;
+            perspective: 1000px;
+        }
+
+        .disease-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(16, 185, 129, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease forwards;
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Third card (centered) */
+        .disease-card.centered {
+            grid-column: 1 / -1;
+            max-width: 600px;
+            margin: 2rem auto 0;
+        }
+
+        .disease-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .disease-image {
+            width: 100%;
+            height: 400px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            position: relative;
+            background: #f8f9fa;
+            border: 2px solid rgba(16, 185, 129, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .disease-card:hover .disease-image {
+            transform: scale(1.02);
+            border-color: var(--primary-green);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2);
+        }
+
+        .disease-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+            border-radius: 13px;
+        }
+
+        .disease-card:hover .disease-image img {
+            transform: scale(1.05);
+        }
+
+        .disease-card:hover::before {
+            left: 100%;
+        }
+
+        .disease-card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Disease Type Specific Styles */
+        .disease-card.fungal {
+            border-left: 4px solid var(--primary-green);
+        }
+
+        .disease-card.bacterial {
+            border-left: 4px solid var(--primary-green);
+        }
+
+        .disease-card.trauma {
+            border-left: 4px solid var(--primary-green);
+        }
+
+        .disease-header {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .disease-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .disease-card:hover .disease-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .disease-card.fungal .disease-icon {
+            background: linear-gradient(135deg, var(--light-green));
+        }
+
+        .disease-card.bacterial .disease-icon {
+            background: linear-gradient(135deg, var(--light-green));
+        }
+
+        .disease-card.trauma .disease-icon {
+            background: linear-gradient(135deg, var(--light-green));
+        }
+
+        .disease-title {
+            flex: 1;
+        }
+
+        .disease-title h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.7rem;
+        }
+
+        .disease-type {
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .disease-card.fungal .disease-type {
+            background: var(--light-green);
+            color: var(--primary-green);
+        }
+
+        .disease-card.bacterial .disease-type {
+            background: var(--light-green);
+            color: var(--primary-green);
+        }
+
+        .disease-card.trauma .disease-type {
+            background: var(--light-green);
+            color: var(--primary-green);
+        }
+
+        .disease-description {
+            margin-bottom: 2rem;
+            color: var(--text-black);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            flex-grow: 1;
+        }
+
+        .treatment-section {
+            padding: 1.5rem;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            margin-top: auto;
+        }
+
+        .disease-card.fungal .treatment-section {
+            background: var(--light-green);
+            border: 1px solid var(--accent-green);
+        }
+
+        .disease-card.bacterial .treatment-section {
+            background: var(--light-green);
+            border: 1px solid var(--accent-green);
+        }
+
+        .disease-card.trauma .treatment-section {
+            background: var(--light-green);
+            border: 1px solid var(--accent-green);
+        }
+
+        .treatment-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .disease-card.fungal .treatment-title {
+            color: var(--primary-green);
+        }
+
+        .disease-card.bacterial .treatment-title {
+            color: var(--primary-green);
+        }
+
+        .disease-card.trauma .treatment-title {
+            color: var(--primary-green);
+        }
+
+        .treatment-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .treatment-list li {
+            position: relative;
+            padding-left: 1.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--text-dark);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .treatment-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 1.2rem;
+            height: 1.2rem;
+            border-radius: 50%;
+            font-size: 0.8rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .disease-card.fungal .treatment-list li::before {
+            background: var(--primary-green);
+            color: white;
+        }
+
+        .disease-card.bacterial .treatment-list li::before {
+            background: var(--primary-green);
+            color: white;
+        }
+
+        .disease-card.trauma .treatment-list li::before {
+            background: var(--primary-green);
+            color: white;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 4rem 5%;
+            margin-top: 4rem;
+            background: var(--bg-light);
+            border-radius: 30px 30px 0 0;
+        }
+
+        .cta-content {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .cta-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--text-dark) 0%, var(--primary-green) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .cta-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-gray);
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+
+        .start-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, var(--primary-green), var(--primary-green));
+            color: white;
+            padding: 1.2rem 3rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 60px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .start-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .start-btn:hover::before {
+            left: 100%;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
+        }
+
+        .start-btn:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            .diseases-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .disease-card.centered {
+                max-width: 100%;
+                margin-top: 0;
+            }
+
+            .disease-card {
+                min-height: auto;
+                padding: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                gap: 1.5rem;
+            }
+
+            .hero-content h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+
+            .disease-card {
+                padding: 1.5rem;
+            }
+
+            .disease-title h2 {
+                font-size: 1.4rem;
+            }
+
+            .disease-description {
+                font-size: 0.95rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .cta-title {
+                font-size: 1.8rem;
+            }
+
+            .cta-subtitle {
+                font-size: 1rem;
+            }
+
+            .start-btn {
+                padding: 1rem 2.5rem;
+                font-size: 1rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .disease-card:nth-child(1) { animation-delay: 0.1s; }
+        .disease-card:nth-child(2) { animation-delay: 0.2s; }
+        .disease-card:nth-child(3) { animation-delay: 0.3s; }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Animation -->
+    <div class="bg-animation">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+    </div>
+
+    <nav class="navbar" id="navbar">
+        <div class="logo">
+            <h1>Nailysist</h1>
+            <p>AI Nail Health Analysis</p>
+        </div>
+        <div class="nav-links">
+            <a href="/">Beranda</a>
+            <a href="/penyakit">Penyakit</a>
+            <a href="/upload">Prediksi</a>
+            <a href="#tentang">Tentang</a>
+        </div>
+    </nav>
+
+    <div class="hero-section">
+        <div class="hero-content">
+            <div class="hero-badge">📚 Panduan Lengkap Kesehatan Kuku</div>
+            <h1>Kenali Penyakit Kuku Anda</h1>
+            <p class="hero-subtitle">Pelajari berbagai jenis penyakit kuku yang umum terjadi beserta cara penanganannya. Informasi medis terpercaya untuk kesehatan kuku yang optimal.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="diseases-grid" id="penyakit">
+            <div class="disease-card fungal">
+                <div class="disease-header">
+                    <div class="disease-icon">🦠</div>
+                    <div class="disease-title">
+                        <h2>Terry's Nail</h2>
+                        <span class="disease-type">Kondisi Kuku Khusus</span>
+                    </div>
+                </div>
+                <div class="disease-image">
+                    <img src="static/uploads/photos/terry.jpg" alt="Terry's Nail - Contoh kuku dengan kondisi Terry's nail menunjukkan warna putih di bagian ujung dan merah/coklat di pangkal" loading="lazy">
+                </div>
+                <div class="disease-description">
+                    Kondisi perubahan warna kuku yang biasanya terjadi pada kuku jari tangan dan kaki. Pada kondisi ini, kuku memiliki tampilan khas dengan warna putih di bagian ujung kuku dan warna merah atau coklat di bagian pangkal kuku, sering kali terlihat sebagai garis tipis yang memisahkan dua warna tersebut. Warna putih pada ujung kuku ini dapat lebih jelas terlihat pada kondisi tertentu.
+                </div>
+                <div class="treatment-section">
+                    <h3 class="treatment-title">
+                        💊 Cara Mengatasi
+                    </h3>
+                    <ul class="treatment-list">
+                        <li>Mengobati kondisi yang mendasari: Terry's Nail biasanya merupakan gejala dari kondisi medis yang lebih serius. Oleh karena itu, pengobatan untuk penyakit yang mendasarinya (seperti penyakit hati, gagal jantung, atau diabetes) adalah langkah pertama dalam mengatasi masalah ini.</li>
+                        <li>Pengelolaan penyakit jantung atau hati: Jika penyebabnya adalah gagal jantung atau penyakit hati, terapi yang tepat dari dokter akan membantu memperbaiki sirkulasi darah dan mengurangi gejala pada kuku.</li>
+                        <li>Kontrol kadar gula darah pada diabetes: Bagi penderita diabetes, menjaga kadar gula darah dalam kisaran normal melalui diet dan pengobatan yang tepat akan membantu memperbaiki kondisi kuku.</li>
+                        <li>Pemeriksaan berkala: Jika Anda melihat perubahan pada kuku Anda yang mirip dengan Terry's Nail, disarankan untuk berkonsultasi dengan dokter agar dapat menjalani pemeriksaan dan diagnosis lebih lanjut.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="disease-card bacterial">
+                <div class="disease-header">
+                    <div class="disease-icon">🥄</div>
+                    <div class="disease-title">
+                        <h2>Koilonychia</h2>
+                        <span class="disease-type">Kuku Sendok</span>
+                    </div>
+                </div>
+                <div class="disease-image">
+                    <img src="static/uploads/photos/koil.jpg" alt="Koilonychia - Kuku berbentuk sendok dengan bagian tengah cekung dan tepi terangkat" loading="lazy">
+                </div>
+                <div class="disease-description">
+                    Kondisi di mana kuku jari tangan atau kaki menjadi cekung atau berbentuk seperti sendok, dengan tepi kuku yang terangkat. Kondisi ini bisa terjadi pada satu kuku atau lebih, dan biasanya disertai dengan perubahan warna atau ketebalan kuku.
+                </div>
+                <div class="treatment-section">
+                    <h3 class="treatment-title">
+                        🩹 Cara Mengatasi
+                    </h3>
+                    <ul class="treatment-list">
+                        <li>Perawatan untuk anemia: Jika penyebab utama adalah anemia defisiensi besi, pengobatan dengan suplemen zat besi atau perubahan pola makan dapat membantu memperbaiki kondisi kuku.</li>
+                        <li>Mengobati penyakit mendasar: Jika koilonychia disebabkan oleh kondisi medis lain seperti penyakit hati atau jantung, penanganan kondisi tersebut dapat memperbaiki masalah pada kuku.</li>
+                        <li>Penyuluhan diet: Mengonsumsi makanan yang kaya zat besi, seperti daging merah, sayuran berdaun hijau, dan kacang-kacangan, dapat membantu mencegah atau mengobati koilonychia akibat kekurangan zat besi.</li>
+                        <li>Pengobatan topikal untuk kuku: Menggunakan pelapis kuku atau produk yang dapat memperkuat kuku juga bisa membantu menjaga kesehatan kuku yang terkena.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="disease-card trauma centered">
+                <div class="disease-header">
+                    <div class="disease-icon">🔵</div>
+                    <div class="disease-title">
+                        <h2>Bluish Nail</h2>
+                        <span class="disease-type">Kuku Kebiruan</span>
+                    </div>
+                </div>
+                <div class="disease-image">
+                    <img src="static/uploads/photos/blu.jpg" alt="Bluish Nail - Kuku dengan warna kebiruan akibat masalah sirkulasi atau kekurangan oksigen" loading="lazy">
+                </div>
+                <div class="disease-description">
+                    Kondisi di mana warna kuku berubah menjadi kebiruan atau kehijauan. Kondisi ini biasanya terjadi karena adanya masalah sirkulasi darah atau kekurangan oksigen yang dibawa oleh aliran darah ke jari-jari tangan atau kaki.
+                </div>
+                <div class="treatment-section">
+                    <h3 class="treatment-title">
+                        🧊 Cara Mengatasi
+                    </h3>
+                    <ul class="treatment-list">
+                        <li>Konsultasi dengan dokter: Jika kuku kebiruan muncul tanpa sebab yang jelas atau berlangsung lama, penting untuk segera memeriksakan diri ke dokter untuk diagnosis yang tepat.</li>
+                        <li>Perawatan untuk masalah kesehatan terkait: Jika kondisi ini disebabkan oleh penyakit tertentu, penanganan medis untuk penyakit tersebut akan membantu mengatasi masalah kuku.</li>
+                        <li>Hindari cedera: Jika kuku kebiruan disebabkan oleh trauma atau cedera, hindari pemaksaan aktivitas fisik yang bisa memperburuk kondisi kuku.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="cta-section">
+        <div class="cta-content">
+            <h2 class="cta-title">Siap Untuk Analisis Kuku Anda?</h2>
+            <p class="cta-subtitle">Gunakan teknologi AI canggih untuk mendapatkan diagnosis akurat kondisi kuku Anda dalam hitungan detik. Cepat, mudah, dan terpercaya.</p>
+            <a href="/upload" class="start-btn">
+                <span>Mulai Prediksi Sekarang</span>
+                <span>→</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Enhanced hover effects for disease cards
+        document.querySelectorAll('.disease-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-10px) rotateX(5deg)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) rotateX(0)';
+            });
+        });
+
+        // Enhanced CTA button effects
+        document.querySelector('.start-btn').addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-3px) scale(1.05)';
+        });
+
+        document.querySelector('.start-btn').addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+
+        // Animate cards on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.disease-card').forEach(card => {
+            observer.observe(card);
+        });
+    </script>
+</body>
+</html>
