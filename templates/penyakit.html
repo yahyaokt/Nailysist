@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nailysist - Panduan Penyakit Kuku</title>
+    <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><text x='0' y='15' font-size='15' fill='black'>💅</text></svg>" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -36,7 +37,6 @@
             overflow-x: hidden;
         }
 
-        /* Background Animation */
         .bg-animation {
             position: fixed;
             top: 0;
@@ -83,7 +83,6 @@
             50% { transform: translateY(-20px) rotate(180deg); }
         }
 
-        /* Navbar */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -162,7 +161,6 @@
             color: var(--primary-green);
         }
 
-        /* Hero Section */
         .hero-section {
             padding: 3rem 5% 1.5rem;
             text-align: center;
@@ -215,14 +213,12 @@
             line-height: 1.6;
         }
 
-        /* Container */
         .container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 1rem 5%;
         }
 
-        /* Diseases Grid - 2 cards on top, 1 centered below */
         .diseases-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -246,7 +242,6 @@
             flex-direction: column;
         }
 
-        /* Third card (centered) */
         .disease-card.centered {
             grid-column: 1 / -1;
             max-width: 600px;
@@ -306,7 +301,6 @@
             box-shadow: var(--shadow-hover);
         }
 
-        /* Disease Type Specific Styles */
         .disease-card.fungal {
             border-left: 4px solid var(--primary-green);
         }
@@ -484,7 +478,6 @@
             color: white;
         }
 
-        /* CTA Section */
         .cta-section {
             text-align: center;
             padding: 4rem 5%;
@@ -557,7 +550,6 @@
             transform: translateY(-1px) scale(1.02);
         }
 
-        /* Mobile Responsive */
         @media (max-width: 1024px) {
             .diseases-grid {
                 grid-template-columns: 1fr;
@@ -624,7 +616,6 @@
             }
         }
 
-        /* Animations */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -640,7 +631,6 @@
         .disease-card:nth-child(2) { animation-delay: 0.2s; }
         .disease-card:nth-child(3) { animation-delay: 0.3s; }
 
-        /* Smooth scroll */
         html {
             scroll-behavior: smooth;
         }
@@ -657,13 +647,11 @@
     <nav class="navbar" id="navbar">
         <div class="logo">
             <h1>Nailysist</h1>
-            <p>AI Nail Health Analysis</p>
         </div>
         <div class="nav-links">
             <a href="/">Beranda</a>
             <a href="/penyakit">Penyakit</a>
             <a href="/upload">Prediksi</a>
-            <a href="#tentang">Tentang</a>
         </div>
     </nav>
 
@@ -731,16 +719,16 @@
                 </div>
             </div>
 
-            <div class="disease-card trauma centered">
+            <div class="disease-card fungal">
                 <div class="disease-header">
-                    <div class="disease-icon">🔵</div>
+                    <div class="disease-icon">❄️</div>
                     <div class="disease-title">
                         <h2>Bluish Nail</h2>
-                        <span class="disease-type">Kuku Kebiruan</span>
+                        <span class="disease-type">Kuku Keunguan</span>
                     </div>
                 </div>
                 <div class="disease-image">
-                    <img src="static/uploads/photos/blu.jpg" alt="Bluish Nail - Kuku dengan warna kebiruan akibat masalah sirkulasi atau kekurangan oksigen" loading="lazy">
+                    <img src="static/uploads/photos/blu.jpg" alt="Terry's Nail - Contoh kuku dengan kondisi Terry's nail menunjukkan warna putih di bagian ujung dan merah/coklat di pangkal" loading="lazy">
                 </div>
                 <div class="disease-description">
                     Kondisi di mana warna kuku berubah menjadi kebiruan atau kehijauan. Kondisi ini biasanya terjadi karena adanya masalah sirkulasi darah atau kekurangan oksigen yang dibawa oleh aliran darah ke jari-jari tangan atau kaki.
@@ -756,10 +744,35 @@
                     </ul>
                 </div>
             </div>
+
+            <div class="disease-card bacterial">
+                <div class="disease-header">
+                    <div class="disease-icon">💪</div>
+                    <div class="disease-title">
+                        <h2>Healthy Nail</h2>
+                        <span class="disease-type">Kuku yang Sehat</span>
+                    </div>
+                </div>
+                <div class="disease-image">
+                    <img src="static/uploads/photos/health.jpg" alt="Koilonychia - Kuku berbentuk sendok dengan bagian tengah cekung dan tepi terangkat" loading="lazy">
+                </div>
+                <div class="disease-description">
+                    Kuku yang sehat memiliki warna pink alami, permukaan halus, dan tidak menunjukkan adanya perubahan warna, kerusakan, atau kelainan lainnya. Kondisi ini mencerminkan kesehatan tubuh secara keseluruhan, menandakan bahwa tubuh berada dalam kondisi prima dan berfungsi dengan baik.
+                </div>
+                <div class="treatment-section">
+                    <h3 class="treatment-title">
+                        🛡️ Cara Menjaga
+                    </h3>
+                    <ul class="treatment-list">
+                        <li>Menjaga Gizi yang Seimbang: Mengonsumsi makanan yang kaya zat besi, protein, dan vitamin, seperti daging merah, sayuran hijau, dan kacang-kacangan, membantu menjaga kuku tetap kuat dan sehat.</li>
+                        <li>Pemeliharaan Kebersihan dan Kelembapan: Menjaga kebersihan kuku dan menggunakan pelembap atau minyak kuku secara teratur untuk mencegah kekeringan dan kerusakan.</li>
+                        <li>Pemotongan dan Perawatan Rutin: Memotong kuku secara teratur dan menjaga panjang kuku agar tidak terlalu panjang dapat mengurangi risiko cedera dan infeksi.</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- CTA Section -->
     <div class="cta-section">
         <div class="cta-content">
             <h2 class="cta-title">Siap Untuk Analisis Kuku Anda?</h2>
@@ -772,7 +785,6 @@
     </div>
 
     <script>
-        // Navbar scroll effect
         window.addEventListener('scroll', () => {
             const navbar = document.getElementById('navbar');
             if (window.scrollY > 50) {
@@ -782,7 +794,6 @@
             }
         });
 
-        // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -796,7 +807,6 @@
             });
         });
 
-        // Enhanced hover effects for disease cards
         document.querySelectorAll('.disease-card').forEach(card => {
             card.addEventListener('mouseenter', () => {
                 card.style.transform = 'translateY(-10px) rotateX(5deg)';
@@ -807,7 +817,6 @@
             });
         });
 
-        // Enhanced CTA button effects
         document.querySelector('.start-btn').addEventListener('mouseenter', function() {
             this.style.transform = 'translateY(-3px) scale(1.05)';
         });
@@ -816,7 +825,6 @@
             this.style.transform = 'translateY(0) scale(1)';
         });
 
-        // Animate cards on scroll
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'

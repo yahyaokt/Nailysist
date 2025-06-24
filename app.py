@@ -102,10 +102,10 @@ CLASS_LABELS = {
 }
 
 CONDITION_DESCRIPTIONS = {
-    'Bluish Nail': 'Kondisi yang bisa terjadi karena gangguan peredaran darah atau masalah jantung, yang menyebabkan perubahan warna kuku menjadi kebiruan. Kondisi ini menunjukkan adanya kadar oksigen yang rendah dalam darah atau masalah dengan aliran darah yang dapat mengindikasikan penyakit serius seperti gangguan paru-paru atau jantung.',
-    'Healthy Nail': 'Kuku yang sehat memiliki warna pink alami, tekstur yang halus, dan tidak ada perubahan warna, kerusakan, atau kelainan lainnya. Ini adalah tanda tubuh dalam keadaan sehat secara umum.',
-    'Koilonychia': 'Kondisi ini sering disebut sebagai kuku sendok, dimana kuku menjadi tipis, melengkung ke dalam, dan terkadang tampak seperti sendok. Hal ini bisa menjadi tanda kekurangan zat besi atau gangguan kesehatan lain seperti anemia atau penyakit jantung.',
-    'Terry-s nail': 'Kondisi ini menunjukkan adanya perubahan warna pada kuku yang menjadi putih dengan area gelap di ujungnya. Terry-s nail dapat berhubungan dengan gangguan kesehatan serius, termasuk penyakit hati, gagal ginjal, atau diabetes.'
+    'Bluish Nail': 'Jika kuku kebiruan muncul tanpa sebab yang jelas atau berlangsung lama, segera konsultasikan dengan dokter untuk diagnosis yang tepat. Jika disebabkan oleh penyakit tertentu, penanganan medis untuk penyakit tersebut akan membantu mengatasi masalah kuku. Jika akibat cedera, hindari aktivitas fisik yang dapat memperburuk kondisi kuku.',
+    'Healthy Nail': 'Untuk menjaga kuku tetap sehat, penting untuk mengonsumsi makanan yang kaya zat besi, protein, dan vitamin, serta menjaga kebersihan kuku dengan menggunakan pelembap atau minyak kuku secara teratur. Selain itu, memotong kuku secara rutin dan menjaga panjang kuku agar tidak terlalu panjang juga dapat mencegah cedera dan infeksi.',
+    'Koilonychia': 'Perawatan untuk koilonychia melibatkan pengobatan penyebab utama, seperti pemberian suplemen zat besi atau perubahan pola makan untuk anemia defisiensi besi. Jika disebabkan oleh penyakit lain, pengobatan kondisi tersebut dapat memperbaiki kuku. Penyuluhan diet dengan mengonsumsi makanan kaya zat besi, seperti daging merah, sayuran berdaun hijau, dan kacang-kacangan, juga penting. Selain itu, penggunaan pelapis kuku atau produk penguat kuku dapat membantu menjaga kesehatan kuku.',
+    'Terry-s nail': 'Terry-s Nail biasanya merupakan gejala dari kondisi medis serius seperti penyakit hati, gagal jantung, atau diabetes. Pengobatan tergantung pada kondisi yang mendasari, seperti pengelolaan penyakit hati atau jantung melalui terapi yang tepat, serta pengontrolan kadar gula darah pada diabetes dengan diet dan obat-obatan. Pemeriksaan berkala dan konsultasi dengan dokter sangat disarankan jika ada perubahan pada kuku yang mirip dengan Terry-s Nail.'
 }
 
 def allowed_file(filename):

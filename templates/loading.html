@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loading Screen - Nailysist</title>
+    <title>Loading - Nailysist</title>
+    <link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16'><text x='0' y='15' font-size='15' fill='black'>💅</text></svg>" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -38,7 +39,6 @@
             position: relative;
         }
 
-        /* Background Animation - Same as landing */
         .bg-animation {
             position: fixed;
             top: 0;
@@ -85,7 +85,6 @@
             50% { transform: translateY(-20px) rotate(180deg); }
         }
 
-        /* Particles Effect */
         .particles {
             position: fixed;
             top: 0;
@@ -343,7 +342,6 @@
             }
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .loading-container {
                 padding: 3rem 2rem;
@@ -370,7 +368,6 @@
     </style>
 </head>
 <body>
-    <!-- Background Animation - Same as landing -->
     <div class="bg-animation">
         <div class="floating-shape shape-1"></div>
         <div class="floating-shape shape-2"></div>
@@ -417,7 +414,6 @@
     </div>
 
     <script>
-        // Create floating particles
         function createParticles() {
             const particlesContainer = document.getElementById('particles');
             const particleCount = 30;
@@ -432,10 +428,8 @@
             }
         }
 
-        // Initialize particles
         createParticles();
 
-        // Get prediction ID from URL
         const pathParts = window.location.pathname.split('/');
         const predictionId = pathParts[pathParts.length - 1];
         
@@ -444,23 +438,19 @@
             "Memproses gambar dengan AI...",
             "Mengekstrak fitur kuku...",
             "Menjalankan model deteksi...",
-            "Menganalisis pola penyakit...",
-            "Menyiapkan rekomendasi...",
             "Hampir selesai..."
         ];
         
         let currentMessageIndex = 0;
         const statusText = document.getElementById('statusText');
-        
-        // Update status messages
+
         const messageInterval = setInterval(() => {
             if (currentMessageIndex < statusMessages.length - 1) {
                 currentMessageIndex++;
                 statusText.textContent = statusMessages[currentMessageIndex];
             }
         }, 1200);
-        
-        // Check prediction status
+
         function checkPredictionStatus() {
             fetch(`/check_prediction/${predictionId}`)
                 .then(response => response.json())
@@ -478,7 +468,6 @@
                             window.location.href = '/upload';
                         }, 2000);
                     } else {
-                        // Still processing, check again
                         setTimeout(checkPredictionStatus, 1000);
                     }
                 })
@@ -491,11 +480,9 @@
                     }, 2000);
                 });
         }
-        
-        // Start checking prediction status
+
         setTimeout(checkPredictionStatus, 1000);
 
-        // Add interactive hover effects similar to landing page
         document.querySelectorAll('.highlight-item').forEach(item => {
             item.addEventListener('mouseenter', () => {
                 item.style.transform = 'translateY(-5px)';
