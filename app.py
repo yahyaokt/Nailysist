@@ -1,15 +1,11 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash
 import os
 import cv2
 import numpy as np
-import os
-os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import tensorflow as tf
 import pickle
 from werkzeug.utils import secure_filename
 import uuid
-import time
 
 app = Flask(__name__)
 app.secret_key = 'yahya_wong_sangar'
@@ -21,14 +17,9 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-prediction_results = {}
-
-# Model untuk prediksi kelas kuku
 model = None
-# Model untuk deteksi apakah gambar adalah kuku atau bukan
 nail_detector_model = None
 
-# Load model utama (prediksi kelas kuku)
 try:
     try:
         with open("gacor_model.pkl", "rb") as f:
@@ -61,7 +52,6 @@ except Exception as e:
     print(f"Critical error in main model loading: {e}")
     model = None
 
-# Load model detector kuku
 try:
     try:
         with open("model_kuku.pkl", "rb") as f:
@@ -139,16 +129,11 @@ def preprocess_and_extract_features(image_path):
         return None
 
 def is_nail_image(nail_detector_model, features):
-    """
-    Fungsi untuk mendeteksi apakah gambar adalah kuku atau bukan
-    Returns: True jika gambar adalah kuku (prediksi = 1), False jika bukan (prediksi = 0)
-    """
     try:
         if nail_detector_model is None:
             print("Nail detector model not available, assuming image is nail")
             return True
-        
-        # Prediksi menggunakan model detector kuku
+
         if hasattr(nail_detector_model, 'predict'):
             prediction = nail_detector_model.predict(features)[0]
         else:
@@ -156,14 +141,11 @@ def is_nail_image(nail_detector_model, features):
             return True
         
         print(f"Nail detector prediction: {prediction}")
-        
-        # Jika prediksi = 1, maka gambar adalah kuku
-        # Jika prediksi = 0, maka gambar bukan kuku
+
         return prediction == 1
         
     except Exception as e:
         print(f"Error in nail detection: {e}")
-        # Jika terjadi error, anggap gambar adalah kuku untuk menghindari false negative
         return True
 
 def get_prediction_probabilities(model, features):
@@ -218,10 +200,6 @@ def upload():
 def penyakit():
     return render_template('penyakit.html')
 
-@app.route('/loading/<prediction_id>')
-def loading(prediction_id):
-    return render_template('loading.html', prediction_id=prediction_id)
-
 @app.route('/predict', methods=['POST'])
 def predict():
     if model is None:
@@ -239,79 +217,37 @@ def predict():
     
     if file and allowed_file(file.filename):
         try:
-            # Generate unique prediction ID
-            prediction_id = str(uuid.uuid4())
-            
-            # Save file
             filename = str(uuid.uuid4()) + '_' + secure_filename(file.filename)
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
             print(f"File saved to: {filepath}")
-
-            # Initialize prediction status
-            prediction_results[prediction_id] = {
-                'status': 'processing',
-                'filepath': filepath,
-                'filename': filename
-            }
-            
-            # Redirect to loading page
-            return redirect(url_for('loading', prediction_id=prediction_id))
-            
-        except Exception as e:
-            print(f"Error in file handling: {e}")
-            flash(f'Terjadi error saat memproses gambar: {str(e)}')
-            return redirect(url_for('upload'))
-    else:
-        flash('Format file tidak didukung. Gunakan PNG, JPG, JPEG, GIF, atau BMP.')
-        return redirect(url_for('upload'))
-
-@app.route('/check_prediction/<prediction_id>')
-def check_prediction(prediction_id):
-    if prediction_id not in prediction_results:
-        return jsonify({'status': 'error', 'message': 'Prediction ID tidak ditemukan'})
-    
-    result = prediction_results[prediction_id]
-    
-    if result['status'] == 'processing':
-        try:
-            filepath = result['filepath']
-            filename = result['filename']
-            
             print("Starting preprocessing...")
             features = preprocess_and_extract_features(filepath)
             if features is None:
-                result['status'] = 'error'
-                result['message'] = 'Error dalam memproses gambar'
-                return jsonify(result)
+                flash('Error dalam memproses gambar')
+                return redirect(url_for('upload'))
             
             print(f"Features shape: {features.shape}")
-            
-            # Cek apakah gambar adalah kuku menggunakan model detector
+
             print("Checking if image is a nail...")
             if not is_nail_image(nail_detector_model, features):
-                # Jika bukan gambar kuku (prediksi = 0)
+
                 print("Image is not detected as a nail image")
                 
                 image_path = url_for('static', filename=f'uploads/{filename}')
                 
-                result.update({
-                    'status': 'completed',
-                    'prediction': 'Bukan Gambar Kuku',
-                    'confidence': 95.0,
-                    'description': 'Gambar yang Anda upload tidak terdeteksi sebagai gambar kuku. Silakan upload gambar kuku yang jelas untuk mendapatkan hasil diagnosa yang akurat.',
-                    'image_path': image_path,
-                    'probabilities': {
-                        'Bluish Nail': 0.0,
-                        'Healthy Nail': 0.0,
-                        'Koilonychia': 0.0,
-                        'Terry-s nail': 0.0
-                    }
-                })
-                
-                return jsonify(result)
-            
-            # Jika gambar adalah kuku (prediksi = 1), lanjutkan prediksi kelas kuku
+                return render_template('result.html',
+                                     prediction='Bukan Gambar Kuku',
+                                     confidence=95.0,
+                                     description='Gambar yang Anda upload tidak terdeteksi sebagai gambar kuku. Silakan upload gambar kuku yang jelas untuk mendapatkan hasil diagnosa yang akurat.',
+                                     image_path=image_path,
+                                     probabilities={
+                                         'Bluish Nail': 0.0,
+                                         'Healthy Nail': 0.0,
+                                         'Koilonychia': 0.0,
+                                         'Terry-s nail': 0.0
+                                     })
+
             print("Image is detected as a nail image, proceeding with nail classification...")
             print("Making nail condition prediction...")
             
@@ -330,43 +266,22 @@ def check_prediction(prediction_id):
                 else:
                     probability_dict[class_name] = 0.0
             
-            # Update result with completed prediction
-            result.update({
-                'status': 'completed',
-                'prediction': prediction_label,
-                'confidence': round(main_confidence, 1),
-                'description': description,
-                'image_path': image_path,
-                'probabilities': probability_dict
-            })
-            
             print(f"Nail condition prediction completed: {prediction_label} with {main_confidence}% confidence")
+            
+            return render_template('result.html',
+                                 prediction=prediction_label,
+                                 confidence=round(main_confidence, 1),
+                                 description=description,
+                                 image_path=image_path,
+                                 probabilities=probability_dict)
             
         except Exception as e:
             print(f"Error in prediction: {e}")
-            result['status'] = 'error'
-            result['message'] = f'Terjadi error saat memproses gambar: {str(e)}'
-    
-    return jsonify(result)
-
-@app.route('/result/<prediction_id>')
-def result(prediction_id):
-    if prediction_id not in prediction_results:
-        flash('Hasil prediksi tidak ditemukan')
+            flash(f'Terjadi error saat memproses gambar: {str(e)}')
+            return redirect(url_for('upload'))
+    else:
+        flash('Format file tidak didukung. Gunakan PNG, JPG, JPEG, GIF, atau BMP.')
         return redirect(url_for('upload'))
-    
-    result = prediction_results[prediction_id]
-    
-    if result['status'] != 'completed':
-        flash('Prediksi belum selesai atau terjadi error')
-        return redirect(url_for('upload'))
-    
-    return render_template('result.html', 
-                         prediction=result['prediction'],
-                         confidence=result['confidence'],
-                         description=result['description'],
-                         image_path=result['image_path'],
-                         probabilities=result['probabilities'])
 
 @app.errorhandler(413)
 def too_large(e):
@@ -374,16 +289,4 @@ def too_large(e):
     return redirect(url_for('upload'))
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    debug_mode = os.environ.get('FLASK_ENV') == 'development'
-    
-    print(f"Starting Flask app on port {port}")
-    print(f"Debug mode: {debug_mode}")
-    print(f"Main model available: {model is not None}")
-    print(f"Nail detector model available: {nail_detector_model is not None}")
-    
-    app.run(
-        host='0.0.0.0',
-        port=port,
-        debug=debug_mode
-    )
+    app.run()
